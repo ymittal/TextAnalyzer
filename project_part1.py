@@ -5,6 +5,14 @@ import string
 MAX_WORDS = 10
 
 def findMostFrequentList(freqDict):
+    """
+    Param(s): Dict of word-frequency pairs
+    Finds (MAX_WORDS) most frequent words using List.sort(),
+    adds word-frequency pairs to freqStr in required format
+    Returns as a List tuples (word, frequency) in DESC order of frequency
+    <https://docs.python.org/3/tutorial/datastructures.html#dictionaries>
+    <https://docs.python.org/2/tutorial/datastructures.html#more-on-lists>
+    """
     freqStr = ""
     freqList = []
     words = list(freqDict.keys())
@@ -33,6 +41,10 @@ def findMostFrequentList(freqDict):
 ##    return freqStr
 
 def findFrequency(finalWords):
+    """
+    Param(s): finalWords -> List of cleaned and stemmed words
+    Returns as a Dict of word-frequency pairs
+    """
     freqDict = {}
     for word in finalWords:
         if len(word) > 0:   # ignores stray spaces (e.g., Moby Dick's story webpage)
@@ -44,6 +56,14 @@ def findFrequency(finalWords):
     return freqDict
     
 def cleanContent(wordList, stopwords):
+    """
+    Param(s): wordList -> List of words on website entered
+              stopwords -> List of stopwords
+    Removes punctuation marks (string.punctuation) and digits
+    using string.replace method, checks (and deletes) stopwords
+    Returns as a List cleaned words
+    <https://docs.python.org/2/library/string.html> | Stack Overflow
+    """
     stopwordsIndices = []
     strangeCharacters = string.punctuation + '0123456789'
     for i in range(len(wordList)):
@@ -56,6 +76,11 @@ def cleanContent(wordList, stopwords):
         del wordList[index] # deletes stopwords from Right to Left
 
 def stemContent(wordList):
+    """
+    Param(s): wordList -> List of clean words (no punctuation or stopwords)
+    Stems words (usually, suffixed words) into root word
+    Returns as a List cleaned and stemmed words
+    """
     # popular suffixes: <http://www.darke.k12.oh.us/curriculum/la/suffixes.pdf>
     suffixes = ['s','es','ed','ing','ly','er','est','able','ness','ment','ful',
                 'less','ship','ish','like','most','ward','wise','ism','some']
@@ -73,6 +98,11 @@ def stemContent(wordList):
             wordList[i] = word
 
 def filterContent(wordList):
+    """
+    Param(s): wordList -> List of all words on entered website
+    Calls helper functions to "clean" and "stem" words
+    Returns as a List pure words (no stop-words or stemmed words)
+    """
     # stop-words.txt: <http://xpo6.com/list-of-english-stop-words/>
     stopwords = []
     with open("stop-words.txt") as fin:
@@ -83,6 +113,10 @@ def filterContent(wordList):
     return wordList
 
 def getContent():
+    """
+    Param(s): None
+    Returns as a List "splitted" words on a user-entered website
+    """
     url = input('Please enter a URL ')
     if "://" not in url:
         url = "http://" + url
