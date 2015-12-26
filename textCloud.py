@@ -1,8 +1,11 @@
+# Dummy URL: http://www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html
+
 from hmc_urllib import getHTML
 from simpleTextCloudDisplay import displayCloud
 import string
 
 MAX_WORDS = 50
+DEPTH = 2
 
 def findMostFrequentList(freqDict):
     """
@@ -14,35 +17,20 @@ def findMostFrequentList(freqDict):
     <https://docs.python.org/2/tutorial/datastructures.html#more-on-lists>
     """
     global MAX_WORDS
-    freqStr = ""
     freqList = []
     words = list(freqDict.keys())
     frequencies = list(freqDict.values())
     for i in range(0, len(freqDict)):
         freqList.append((frequencies[i],words[i])) # word-frequency order reversed in tuple
     freqList.sort(reverse=True)
-           
+
     if len(freqList) < MAX_WORDS:
         MAX_WORDS = len(freqList) # prevents IndexError
-
-    # reversing order again (fix) of first 50 (most frequent words) elements    
+    
+    # reversing order again (fix) of first 50 (most frequent words) elements
     for j in range(0,MAX_WORDS):
         freqList[j] = (freqList[j][1], freqList[j][0])
-        freqStr += freqList[j][0] + " (" + str(freqList[j][1]) + ") \n"
-    print ("\nHere is the text cloud for your web page: \n", freqStr)
     return freqList[0:MAX_WORDS]
-    
-##    Modified Selection Sort
-##    for i in range(0, MAX_WORDS):
-##        max = i
-##        for j in range(i+1,len(words)):
-##            if frequencies[j] > frequencies[max]:
-##                max = j
-##        words[i], words[max] = words[max], words[i]
-##        frequencies[i], frequencies[max] = frequencies[max], frequencies[i]
-##        freqStr += words[i] + " (" + str(frequencies[i]) + ")\n"
-##    print ("\nHere is the text cloud for your web page: \n", freqStr)
-##    return freqStr
 
 def findFrequency(finalWords):
     """
@@ -56,16 +44,15 @@ def findFrequency(finalWords):
                 freqDict[word] = 1
             else:
                 freqDict[word] += 1
-    print ("\nHere is the dictionary of words on that page: \n", freqDict)
     return freqDict
     
 def cleanContent(wordList, stopwords):
     """
-    Param(s): wordList -> List of words on website entered
+    Param(s): wordList -> List of words on entered website
               stopwords -> List of stopwords
     Removes punctuation marks (string.punctuation) and digits
     using string.replace method, checks (and deletes) stopwords
-    Returns as a List cleaned words
+    Returns as a List "clean" words
     <https://docs.python.org/2/library/string.html> | Stack Overflow
     """
     stopwordsIndices = []
@@ -103,7 +90,7 @@ def stemContent(wordList):
 
 def filterContent(wordList):
     """
-    Param(s): wordList -> List of all words on entered website
+    Param(s): List of words on all pages crawled
     Calls helper functions to "clean" and "stem" words
     Returns as a List pure words (no stop-words or stemmed words)
     """
@@ -111,7 +98,7 @@ def filterContent(wordList):
     stopwords = []
     with open("stop-words.txt") as fin:
         stopwords = fin.read().splitlines()
-    
+
     cleanContent(wordList, stopwords)
     stemContent(wordList)
     return wordList
@@ -119,23 +106,42 @@ def filterContent(wordList):
 def getContent():
     """
     Param(s): None
-    Returns as a List "splitted" words on a user-entered website
+    Returns as a List "splitted" words on all web pages
+    crawled according to set DEPTH
     """
     url = input('Please enter a URL ')
     if "://" not in url:
         url = "http://" + url
-    contents = getHTML(url) # returns a tuple(content,urls)
-    return contents[0].split()  # contents[0] = website text
+
+    # learned web crawling method in CS101: Building a Search Engine
+    # online course on Udacity.com
+    uncrawled, crawled, nextLevel = [url], [], []
+    depth = 0
+    text = ""
+    while depth <= DEPTH and uncrawled:
+        page = uncrawled.pop()
+        if page not in crawled:
+            contents = getHTML(page) # returns a tuple(content,urls)
+            for link in contents[1]:
+                if link not in crawled and link != "http://www.bucknell.edu/":
+                    nextLevel.append(link)
+            crawled.append(page)
+            text += contents[0]
+        if uncrawled == []: # increase depth only when all pages on a depth are crawled
+            uncrawled, nextLevel = nextLevel, []
+            depth += 1
+    return text.split()
 
 def main():
     """
     Function called at program run
-    """
+    """  
     wordList = getContent()
     finalWords = filterContent(wordList)
     freqDict = findFrequency(finalWords)
     freqList = findMostFrequentList(freqDict)
+    print (freqList)
     displayCloud(freqList)
-    
+
 if __name__=="__main__":
     main()
