@@ -1,3 +1,9 @@
+"""
+Modified the Porter Stemming Algorithm to account
+for frequently occuring suffixes.
+
+"""
+
 class ModifiedStemmer:
     def __init__(self):
         self.w = ''
@@ -58,7 +64,7 @@ class ModifiedStemmer:
         return self.w
 
 def main():
-    s = Stemmer()
+    s = ModifiedStemmer()
     wordList = ['caresses','ponies','structured','spelled',
                 'studied','spamming','spammed','missing','able']
     wordList = ['relational','conditional','valency','comfortably',

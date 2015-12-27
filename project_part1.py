@@ -1,5 +1,6 @@
 from hmc_urllib import getHTML
 from simpleTextCloudDisplay import displayCloud
+from modifiedStemmer import ModifiedStemmer
 import string
 
 MAX_WORDS = 50
@@ -91,23 +92,19 @@ def stemContent(wordList):
     Returns as a List stemmed words
     """
     """
-    stemContent(['jog','jogs','jogging','jogged','jogger','a','refreshments'])
+    stemContent(['jog','jogs','jogging','jogged','jogger'])
+    stemContent(['caresses','ponies','structured','spelled','studied',
+                 'spamming','spammed','missing','able'])
     """
-    # popular suffixes: <http://www.darke.k12.oh.us/curriculum/la/suffixes.pdf>
-    suffixes = ['s','es','ed','ing','ly','er','est','able','ness','ment','ful',
-                'less','ship','ish','like','most','ward','wise','ism','some']
+    s = ModifiedStemmer()
+    exceptions = {}
     for i in range(len(wordList)):
         word = wordList[i]
-        for suffix in suffixes:
-            if suffix == word[len(word)-len(suffix): ]:
-                word = word[ :-1*len(suffix)]   # removes major suffix
-                # usually a trailing character exists (e.g., jogging -> jogg)
-                try:
-                    if word[-1] == word[-2]:
-                        word = word[ :len(word)-1]
-                except IndexError:
-                    pass
-            wordList[i] = word
+        if len(word) > 1: # extra short words are neglected
+            if word not in exceptions:
+                wordList[i] = s.stem(word)
+            else:
+                wordList[i] = exceptions[word]
 
 def filterContent(wordList):
     """
@@ -116,7 +113,9 @@ def filterContent(wordList):
     Returns as a List pure words (no punctuation, stop-words or stemmed words)
     """
     """
-    
+    filterContent(['rel(a)tional','conditional','comfortably','differently',
+                   'this.1','communal-ism','number1','formality',
+                   'electricity','goodness',''])
     """
     # stop-words.txt: <http://xpo6.com/list-of-english-stop-words/>
     stopwords = []
