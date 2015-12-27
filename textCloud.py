@@ -16,7 +16,17 @@ def findMostFrequentList(freqDict):
     <https://docs.python.org/3/tutorial/datastructures.html#dictionaries>
     <https://docs.python.org/2/tutorial/datastructures.html#more-on-lists>
     """
-    global MAX_WORDS
+    """
+    findMostFrequentList({'test': 2, 'random': 10, 'max': 100, 'testify': 2, 'min': 1})
+    findMostFrequentList({'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7, 'h':8, 'i':9, 'j':10,
+                          'k':11, 'l':12, 'm':13, 'n':14, 'o':15, 'p':16, 'q':17, 'r':18, 's':19, 't':20,
+                          'u':21, 'v':22, 'w':23, 'x':24, 'y':25, 'z':26, 'aa':27, 'ab':28, 'ac':29, 'ad':30,
+                          'ae':31, 'af':32, 'ag':33, 'ah':34, 'ai':35, 'aj':36, 'ak':37, 'al':38, 'am':39, 'an':40,
+                          'ao':41, 'ap':42, 'aq':43, 'ar':44, 'as':45, 'at':46, 'au':47, 'av':48, 'aw':49, 'ax':50,
+                          'ay':51, 'az':52})
+    """
+    # Inspiration from <http://bit.do/StackOverflow-Global2Local>
+    MAX_WORDS = globals()['MAX_WORDS']  # so global MAX_WORDS is not modified
     freqList = []
     words = list(freqDict.keys())
     frequencies = list(freqDict.values())
@@ -37,6 +47,9 @@ def findFrequency(finalWords):
     Param(s): finalWords -> List of cleaned and stemmed words
     Returns as a Dict of word-frequency pairs
     """
+    """
+    findFrequency(['','test','','testify','test','','testify'])
+    """
     freqDict = {}
     for word in finalWords:
         if len(word) > 0:   # ignores stray spaces (e.g., Moby Dick's story webpage)
@@ -55,6 +68,10 @@ def cleanContent(wordList, stopwords):
     Returns as a List "clean" words
     <https://docs.python.org/2/library/string.html> | Stack Overflow
     """
+    """
+    cleanContent(['test1','te.st','','a1'], ['','a'])
+    cleanContent(['te.st1','other'], ['other'])
+    """
     stopwordsIndices = []
     strangeCharacters = string.punctuation + '0123456789'
     for i in range(len(wordList)):
@@ -70,7 +87,10 @@ def stemContent(wordList):
     """
     Param(s): wordList -> List of clean words (no punctuation or stopwords)
     Stems words (usually, suffixed words) into root word
-    Returns as a List cleaned and stemmed words
+    Returns as a List stemmed words
+    """
+    """
+    stemContent(['jog','jogs','jogging','jogged','jogger','a','refreshments'])
     """
     # popular suffixes: <http://www.darke.k12.oh.us/curriculum/la/suffixes.pdf>
     suffixes = ['s','es','ed','ing','ly','er','est','able','ness','ment','ful',
@@ -92,7 +112,10 @@ def filterContent(wordList):
     """
     Param(s): List of words on all pages crawled
     Calls helper functions to "clean" and "stem" words
-    Returns as a List pure words (no stop-words or stemmed words)
+    Returns as a List pure words (no punctuation, stop-words or stemmed words)
+    """
+    """
+
     """
     # stop-words.txt: <http://xpo6.com/list-of-english-stop-words/>
     stopwords = []
@@ -103,18 +126,17 @@ def filterContent(wordList):
     stemContent(wordList)
     return wordList
 
-def getContent():
+def getContent(url):
     """
-    Param(s): None
+    Param(s): url -> user-entered website
     Returns as a List "splitted" words on all web pages
     crawled according to set DEPTH
     """
-    url = input('Please enter a URL ')
     if "://" not in url:
         url = "http://" + url
 
-    # learned web crawling method in CS101: Building a Search Engine
-    # online course on Udacity.com
+    # learned web crawling methods in CS101: Building a Search Engine
+    # MOOC on Udacity.com
     uncrawled, crawled, nextLevel = [url], [], []
     depth = 0
     text = ""
@@ -135,8 +157,9 @@ def getContent():
 def main():
     """
     Function called at program run
-    """  
-    wordList = getContent()
+    """
+    url = input('Please enter a URL ')
+    wordList = getContent(url)
     finalWords = filterContent(wordList)
     freqDict = findFrequency(finalWords)
     freqList = findMostFrequentList(freqDict)

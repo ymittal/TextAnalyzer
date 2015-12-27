@@ -13,7 +13,17 @@ def findMostFrequentList(freqDict):
     <https://docs.python.org/3/tutorial/datastructures.html#dictionaries>
     <https://docs.python.org/2/tutorial/datastructures.html#more-on-lists>
     """
-    global MAX_WORDS
+    """
+    findMostFrequentList({'test': 2, 'random': 10, 'max': 100, 'testify': 2, 'min': 1})
+    findMostFrequentList({'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7, 'h':8, 'i':9, 'j':10,
+                          'k':11, 'l':12, 'm':13, 'n':14, 'o':15, 'p':16, 'q':17, 'r':18, 's':19, 't':20,
+                          'u':21, 'v':22, 'w':23, 'x':24, 'y':25, 'z':26, 'aa':27, 'ab':28, 'ac':29, 'ad':30,
+                          'ae':31, 'af':32, 'ag':33, 'ah':34, 'ai':35, 'aj':36, 'ak':37, 'al':38, 'am':39, 'an':40,
+                          'ao':41, 'ap':42, 'aq':43, 'ar':44, 'as':45, 'at':46, 'au':47, 'av':48, 'aw':49, 'ax':50,
+                          'ay':51, 'az':52})
+    """
+    # Inspiration from <http://bit.do/StackOverflow-Global2Local>
+    MAX_WORDS = globals()['MAX_WORDS']  # so global MAX_WORDS is not modified
     freqStr = ""
     freqList = []
     words = list(freqDict.keys())
@@ -31,23 +41,14 @@ def findMostFrequentList(freqDict):
         freqStr += freqList[j][0] + " (" + str(freqList[j][1]) + ") \n"
     print ("\nHere is the text cloud for your web page: \n", freqStr)
     return freqList[0:MAX_WORDS]
-    
-##    Modified Selection Sort
-##    for i in range(0, MAX_WORDS):
-##        max = i
-##        for j in range(i+1,len(words)):
-##            if frequencies[j] > frequencies[max]:
-##                max = j
-##        words[i], words[max] = words[max], words[i]
-##        frequencies[i], frequencies[max] = frequencies[max], frequencies[i]
-##        freqStr += words[i] + " (" + str(frequencies[i]) + ")\n"
-##    print ("\nHere is the text cloud for your web page: \n", freqStr)
-##    return freqStr
 
 def findFrequency(finalWords):
     """
     Param(s): finalWords -> List of cleaned and stemmed words
     Returns as a Dict of word-frequency pairs
+    """
+    """
+    findFrequency(['','test','','testify','test','','testify'])
     """
     freqDict = {}
     for word in finalWords:
@@ -68,6 +69,10 @@ def cleanContent(wordList, stopwords):
     Returns as a List cleaned words
     <https://docs.python.org/2/library/string.html> | Stack Overflow
     """
+    """
+    cleanContent(['test1','te.st','','a1'], ['','a'])
+    cleanContent(['te.st1','other'], ['other'])
+    """
     stopwordsIndices = []
     strangeCharacters = string.punctuation + '0123456789'
     for i in range(len(wordList)):
@@ -83,7 +88,10 @@ def stemContent(wordList):
     """
     Param(s): wordList -> List of clean words (no punctuation or stopwords)
     Stems words (usually, suffixed words) into root word
-    Returns as a List cleaned and stemmed words
+    Returns as a List stemmed words
+    """
+    """
+    stemContent(['jog','jogs','jogging','jogged','jogger','a','refreshments'])
     """
     # popular suffixes: <http://www.darke.k12.oh.us/curriculum/la/suffixes.pdf>
     suffixes = ['s','es','ed','ing','ly','er','est','able','ness','ment','ful',
@@ -105,7 +113,10 @@ def filterContent(wordList):
     """
     Param(s): wordList -> List of all words on entered website
     Calls helper functions to "clean" and "stem" words
-    Returns as a List pure words (no stop-words or stemmed words)
+    Returns as a List pure words (no punctuation, stop-words or stemmed words)
+    """
+    """
+    
     """
     # stop-words.txt: <http://xpo6.com/list-of-english-stop-words/>
     stopwords = []
@@ -116,12 +127,15 @@ def filterContent(wordList):
     stemContent(wordList)
     return wordList
 
-def getContent():
+def getContent(url):
     """
-    Param(s): None
-    Returns as a List "splitted" words on a user-entered website
+    Param(s): url -> user-entered website
+    Returns as a List "splitted" words on the user-entered website
     """
-    url = input('Please enter a URL ')
+    """
+    getContent("http://www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html")
+    getContent("www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html")
+    """
     if "://" not in url:
         url = "http://" + url
     contents = getHTML(url) # returns a tuple(content,urls)
@@ -131,11 +145,12 @@ def main():
     """
     Function called at program run
     """
-    wordList = getContent()
+    url = input('Please enter a URL ')
+    wordList = getContent(url)
     finalWords = filterContent(wordList)
     freqDict = findFrequency(finalWords)
     freqList = findMostFrequentList(freqDict)
-    displayCloud(freqList)
+    # displayCloud(freqList)
     
 if __name__=="__main__":
     main()

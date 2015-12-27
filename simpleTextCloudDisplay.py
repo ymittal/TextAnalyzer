@@ -1,11 +1,4 @@
-""" Using VPython label objects for displaying words in a text cloud.
-    Looks quite scary :) """
-
-""" Can't angle text with label object!
-    Some fonts are times, monospace, sans, serif  """
-
 from visual import *
-
 
 def windowSetup():   
     """" Sets up the VPython window "scene"
@@ -25,9 +18,6 @@ def createSortedList():
         and its count for testing displayCloud().  The list is sorted on the
         counts from highest to lowest.  Returns a similar data structure as
         expected from text cloud analyzer. """
-
-##    sortedList = [('spam', 10), ('page', 4), ('love', 3), ('text', 2),
-##                  ('number', 1), ('example', 1), ('cloud', 1)]
     
     # 31 most common words on CSCI 203 home web page, values are random
     sortedList = [('lab', 19), ('homework', 16), ('due', 13), ('monday', 12),
@@ -51,8 +41,6 @@ def displayCloud(sortedList):
     maxHeight = 100 # max height of letter in pixels
     
     maxCount = sortedList[0][1]
-
-
     myLabels = []
     for w in range(len(sortedList)):
 
@@ -70,7 +58,7 @@ def displayCloud(sortedList):
     # How to access one of the labels in the list of label objects
     # and change an attribute's value
     # Uncomment the next line to change the first word to green.
-    #myLabels[0].color = (0, 1, 0)
+    # myLabels[0].color = (0, 1, 0)
     
 def main():
     windowSetup()
