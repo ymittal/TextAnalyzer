@@ -1,24 +1,52 @@
 """
-Modified the Porter Stemming Algorithm to account
-for frequently occuring suffixes.
+Modified Porter Stemming Algorithm to remove
+frequently occuring suffixes
 
+References:
+<http://tartarus.org/~martin/PorterStemmer/>
+<http://tartarus.org/~martin/PorterStemmer/python.txt>
 """
 
 class ModifiedStemmer:
+    
     def __init__(self):
-        self.w = ''
-        self.k = 0
+        self.w = '' # copy of word to be stemmed (Class Scope)
+        self.k = 0  # decreases as stemming progresses (changed only if needed)
+                    # holds index of last character
 
-    def update(self): # delete "determined" suffix
+    def update(self):
+        """
+        Updates self.w (deletes found suffixes) 
+        """
         self.w = self.w[ :self.k+1]
 
-    def isRestorable(self): # check is 'e' can be restored
+    def isRestorable(self):
+        """
+        Returns True if 'e' should be restored
+        (e.g., structur -> returns True -> structure)
+        """
         vowels = ['a','e','i','o','u']
         return (self.w[self.k] not in vowels)\
                    and (self.w[self.k-1] in vowels)\
                    and (self.w[self.k-2] not in vowels)
         
     def stemMajor(self):
+        """
+        Removes plurals and -ed or -ing or -er. e.g.
+
+        caresses    ->  caress
+        ponies      ->  pony
+        cats        ->  cat
+
+        meetings    ->  meeting     ->  meet
+        number      ->  number
+        studied     ->  study
+        structured  ->  structur    ->  structure
+
+        spamming    ->  spamm       ->  spam
+        spelled     ->  spell
+        missing     ->  miss
+        """
         if self.w.endswith('s'):
             if self.w.endswith(('sses', 'ies')):
                 self.k -= 2
@@ -27,6 +55,7 @@ class ModifiedStemmer:
             elif not self.w.endswith('ss'):
                 self.k -= 1
             self.update()
+            
         if self.w.endswith(('ed','ing','er')):
             if self.w.endswith(('ed','er')):
                 if self.w.endswith('er') and self.w[self.k-2] != self.w[self.k-3]:
@@ -42,43 +71,42 @@ class ModifiedStemmer:
                    and (self.w[self.k] not in ['l','s','z']):
                 self.k -= 1
             self.update()
+        return self.w
 
     def stemOther(self):
-        suffix = ['tional', 'ality', 'ably', 'ly', 'ization',
-                  'ation', 'icity', 'ism', 'fulness','ness','able'
-                  'ive','ment','est','ship']
-        changeTo = ['tion', 'al', 'able', '', 'ize', 'ate', 'ic',
-                    '', '','','','','','','']
+        """
+        Removes major suffixes not addressed previously. e.g.
+
+        relational  ->  relation    ->  relate
+        conditional ->  condition
+        comfortably ->  comfortable ->  comfort
+        awkwardly   ->  awkward
+        electricity ->  electric
+        hopefulness ->  hope
+        goodness    ->  good
+        enjoyment   ->  enjoy
+        richest     ->  rich
+        """
+        suffix = ['tional', 'ality', 'able','ably', 'ly',
+                  'ization', 'ation', 'icity', 'ism',
+                  'fulness','ness', 'ive','ment','est','ship']
+        changeTo = ['tion', 'al', 'able', '','',
+                    'ize', 'ate', 'ic', '', '',
+                    '', '', '', '', '']
+
         for i in range(len(suffix)):
             if self.w.endswith(suffix[i]):
                 self.w = self.w[ :-1*len(suffix[i])] + changeTo[i]
-                self.k += len(changeTo[i]) - len(suffix[i])
+        return self.w
     
     def stem(self, word):
+        """
+        Calls stemMajor() and stemOther(), returns the stemmed word
+        """
         self.w = word
         self.k = len(word)-1
-        self.stemMajor()
-        if word != self.w:
+        
+        # usually changes, if any, after stemMajor() are the only ones
+        if word != self.stemMajor():
             return self.w
-        self.stemOther()
-        return self.w
-
-def main():
-    s = ModifiedStemmer()
-    wordList = ['caresses','ponies','structured','spelled',
-                'studied','spamming','spammed','missing','able']
-    wordList = ['relational','conditional','valency','comfortably',
-                'differently','victimization','communalism','hopefulness',
-                'formality','electricity','goodness','number','jogger']
-    exceptions = {}
-    for i in range(len(wordList)):
-        word = wordList[i]
-        if len(word) > 1:
-            if word not in exceptions:
-                wordList[i] = s.stem(word)
-            else:
-                wordList[i] = exceptions[word]
-    print (wordList)
-    
-if __name__=='__main__':
-    main()
+        return self.stemOther()
