@@ -1,16 +1,16 @@
 # Dummy URL: http://www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html
 
 from hmc_urllib import getHTML
-from simpleTextCloudDisplay import displayCloud
+from complexTextCloudDisplay import displayCloud
 from modifiedStemmer import ModifiedStemmer
 import string
 
 MAX_WORDS = 50
-DEPTH = 2
+DEPTH = 0
 
 def findMostFrequentList(freqDict):
     """
-    Param(s): Dict of word-frequency pairs
+    Param(s): freqDict -> Dict of word-frequency pairs
     Finds (MAX_WORDS) most frequent words using List.sort(),
     adds word-frequency pairs to freqStr in required format
     Returns as a List tuples (word, frequency) in DESC order of frequency
@@ -99,7 +99,8 @@ def stemContent(wordList):
                  'formality','electricity','goodness']
     """
     s = ModifiedStemmer()
-    exceptions = {}
+    exceptions = {'things': 'thing', 'thing': 'thing', 'men': 'man',
+                  'women': 'woman'}
     for i in range(len(wordList)):
         word = wordList[i]
         if len(word) > 1: # extra short words are neglected
@@ -110,7 +111,7 @@ def stemContent(wordList):
 
 def filterContent(wordList):
     """
-    Param(s): List of words on all pages crawled
+    Param(s): wordList -> List of words on all pages crawled
     Calls helper functions to "clean" and "stem" words
     Returns as a List pure words (no punctuation, stop-words or stemmed words)
     """
@@ -166,7 +167,7 @@ def main():
     freqDict = findFrequency(finalWords)
     freqList = findMostFrequentList(freqDict)
     print (freqList)
-    # displayCloud(freqList)
+    displayCloud(freqList)
 
 if __name__=="__main__":
     main()

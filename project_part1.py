@@ -1,5 +1,5 @@
 from hmc_urllib import getHTML
-from simpleTextCloudDisplay import displayCloud
+from complexTextCloudDisplay import displayCloud
 from modifiedStemmer import ModifiedStemmer
 import string
 
@@ -7,7 +7,7 @@ MAX_WORDS = 50
 
 def findMostFrequentList(freqDict):
     """
-    Param(s): Dict of word-frequency pairs
+    Param(s): freqDict -> Dict of word-frequency pairs
     Finds (MAX_WORDS) most frequent words using List.sort(),
     adds word-frequency pairs to freqStr in required format
     Returns as a List tuples (word, frequency) in DESC order of frequency
