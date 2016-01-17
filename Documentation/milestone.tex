@@ -1,0 +1,106 @@
+\title{\textbf{CSCI 203 Place-out Project} \\
+\texttt{milestone.pdf}
+    \vspace{-6mm}}
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage [english]{babel}
+\usepackage [autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setlength{\parindent}{0.2in}
+\setlength{\parskip}{6pt}
+
+%% To edit header %%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Yash Mittal}
+
+%% To insert code (set format) %%
+\usepackage{listings}
+\lstset{
+  aboveskip=2mm,
+  belowskip=2mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+%% To reduce Top Margin to 1 inch only %%
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@maketitle}
+  {\null\vskip 2em\begin{center}}
+  {\centering}
+  {}
+  {}
+\patchcmd{\@maketitle}
+  {\end{center}}
+  {}
+  {}
+  {}
+\makeatother
+
+\begin{document}
+
+\date{}
+\maketitle
+\vspace{-12mm}
+
+\setstretch{1.0}
+\thispagestyle{fancy}
+
+The program first accepts a \texttt{URL} and creates a \texttt{List} of all words appearing on the web page. A helper function \texttt{cleanContent()} is called to remove all instances of punctuation marks, digits and stop-words (stored in \texttt{stop-words.txt}). Next, abstracting functionality of a word stemmer, a \texttt{ModifiedStemmer Object} is created. The program then invokes functions to create and sort according to \texttt{frequency} a \texttt{List} of tuples \texttt{(word, frequency)}. Following is a sample program output with \texttt{MAX\textunderscore WORDS} set to \texttt{5}:
+
+\begin{lstlisting}
+    Please enter a URL http://www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html
+    
+    Here is the dictionary of words on that page: 
+     {`website': 1, `love': 1, `spam': 10, `text': 1, `university': 1, `number': 1, `page': 2, `bucknell': 1, `example': 1, `cloud': 1}
+    
+    Here is the text cloud for your web page: 
+    spam (10) 
+    page (2) 
+    website (1) 
+    university (1) 
+    text (1) 
+\end{lstlisting}
+
+For the first part of \texttt{CSCI 203} programming project, I ensured that the program is robust. At first glance, coding \texttt{stemContent()} appeared as challenging, so I read a renowned paper on a stemming algorithm formulated by Martin Porter. Thereafter, I implemented the Porter Stemmer \texttt{Class} in a unique way, using only one-fourth the number of lines but accounting for almost all major suffixes.
+
+To improve readability, I encoded the above class in \texttt{modifiedStemmer.py} file. On the other hand, the main program majorly follows functional programming paradigm.
+
+\section*{List of Functions}
+\vspace{-2mm}
+\begin{itemize}
+    \item \texttt{getContent(url)} \\
+        Returns as a \texttt{List} of splitted words on the user-entered website
+    \item \texttt{cleanContent(wordList, stopwords)} \\
+        Removes punctuation marks (\texttt{string.punctuation}) and digits using \texttt{string.replace} method, checks (and deletes) stopwords, returns as a \texttt{List} cleaned words
+    \item \texttt{stemContent(wordList)} \\
+        Stems words (usually, suffixed words) into root word, returns as a \texttt{List} stemmed words
+    \item \texttt{filterContent(wordList)} \\
+        Invokes helper functions to "clean" and "stem" words, returns as a \texttt{List} of pure words (no punctuations, stop-words or stemmed words)
+    \item \texttt{findFrequency(finalWords)} \\
+        Returns as a \texttt{Dict} of word-frequency pairs
+    \item \texttt{findMostFrequentList(freqDict)} \\
+        Finds defined number of most frequent words using \texttt{List.sort()}, adds word-frequency pairs to \texttt{freqStr} in required format, returns as a \texttt{List} tuples \texttt{(word, frequency)} in \texttt{DESC} order of frequency
+    \item \texttt{ModifiedStemmer.update(self)} \\
+        Updates local copy of word by removing already determined suffixes
+    \item \texttt{ModifiedStemmer.isRestorable(self)} \\
+        Returns \texttt{True} if `e' is to be restored (e.g., structur would return \texttt{True})
+    \item \texttt{ModifiedStemmer.stemMajor(self)} \\
+        Removes plurals and -ed or -ing or -er suffix
+    \item \texttt{ModifiedStemmer.stemOther(self)} \\
+        Removes major suffixes not accounted for by \texttt{stemMajor()}
+    \item \texttt{ModifiedStemmer.stem(self, word)} \\
+        Calls \texttt{stemMajor()} and \texttt{stemOther()} functions and returns the stemmed word to main program
+\end{itemize}
+
+\end{document}
