@@ -1,12 +1,10 @@
-# Dummy URL: http://www.eg.bucknell.edu/~csci203/placement/2016-spring/project/page1.html
-
 from hmc_urllib import getHTML
 from complexTextCloudDisplay import displayCloud
 from modifiedStemmer import ModifiedStemmer
 import string
 
 MAX_WORDS = 50
-DEPTH = 0
+DEPTH = 2
 
 def findMostFrequentList(freqDict):
     """
@@ -148,7 +146,8 @@ def getContent(url):
         if page not in crawled:
             contents = getHTML(page) # returns a tuple(content,urls)
             for link in contents[1]:
-                if link not in crawled and link != "http://www.bucknell.edu/":
+                # if link not in crawled and link != "http://www.bucknell.edu/":
+                if link not in crawled:
                     nextLevel.append(link)
             crawled.append(page)
             text += contents[0]
@@ -167,7 +166,8 @@ def main():
     freqDict = findFrequency(finalWords)
     freqList = findMostFrequentList(freqDict)
     print (freqList)
-    displayCloud(freqList)
+    if freqList:
+        displayCloud(freqList)
 
 if __name__=="__main__":
     main()
