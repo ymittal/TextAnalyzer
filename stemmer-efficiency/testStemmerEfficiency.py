@@ -1,4 +1,4 @@
-from modifiedStemmer import ModifiedStemmer
+from stemmer import ModifiedStemmer
 
 toBeStemmed, originalStemmed = [], []
 
