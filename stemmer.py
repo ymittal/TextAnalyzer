@@ -1,38 +1,43 @@
 """
-Modified Porter Stemming Algorithm to remove
-frequently occuring suffixes
+A modified stemming algorithm based on the renowned Porter Stemming
+Algorithm given by Martin Porter.
 
-References:
+Refer to:
 <http://tartarus.org/~martin/PorterStemmer/>
 <http://tartarus.org/~martin/PorterStemmer/python.txt>
 """
 
+
 class ModifiedStemmer:
-    
+
     def __init__(self):
-        self.w = '' # copy of word to be stemmed (Class Scope)
-        self.k = 0  # decreases as stemming progresses (changed only if needed)
-                    # holds index of last character
+        self.w = ''         # word to stem
+        self.k = 0          # index of last character
 
     def update(self):
         """
-        Updates self.w (deletes found suffixes) 
+        Updates the word by chopping off portion of the word
+        already determined to be suffixes
         """
-        self.w = self.w[ :self.k+1]
+        self.w = self.w[:self.k + 1]
 
-    def isRestorable(self):
+    def is_e_restorable(self):
         """
-        Returns True if 'e' should be restored
-        (e.g., structur -> returns True -> structure)
+        Determines whether the terminating e character should
+        be restored (e.g., structur returns True and self.w
+        becomes structure)
+
+        :return True if 'e' should be restored
         """
-        vowels = ['a','e','i','o','u']
-        return (self.w[self.k] not in vowels)\
-                   and (self.w[self.k-1] in vowels)\
-                   and (self.w[self.k-2] not in vowels)
-        
-    def stemMajor(self):
+        vowels = ['a', 'e', 'i', 'o', 'u']
+        return (self.w[self.k] not in vowels)       \
+            and (self.w[self.k - 1] in vowels)      \
+            and (self.w[self.k - 2] not in vowels)
+
+    def stem_major(self):
         """
-        Removes plurals and -ed or -ing or -er. e.g.
+        Converts the word in context to singular and removes
+        primary suffixes such as -ed or -ing or -er
 
         caresses    ->  caress
         ponies      ->  pony
@@ -51,31 +56,31 @@ class ModifiedStemmer:
             if self.w.endswith(('sses', 'ies')):
                 self.k -= 2
                 if self.w.endswith('ies'):
-                    self.w = self.w[ :self.k] + 'y'
+                    self.w = self.w[:self.k] + 'y'
             elif not self.w.endswith('ss'):
                 self.k -= 1
             self.update()
-            
-        if self.w.endswith(('ed','ing','er')):
-            if self.w.endswith(('ed','er')):
-                if self.w.endswith('er') and self.w[self.k-2] != self.w[self.k-3]:
+
+        if self.w.endswith(('ed', 'ing', 'er')):
+            if self.w.endswith(('ed', 'er')):
+                if self.w.endswith('er') and self.w[self.k - 2] != self.w[self.k - 3]:
                     return
                 self.k -= 2
                 if self.w.endswith('ied'):
-                    self.w = self.w[ :self.k] + 'y'
-                if self.isRestorable():
+                    self.w = self.w[:self.k] + 'y'
+                if self.is_e_restorable():
                     self.k += 1
             else:
                 self.k -= 3
-            if (self.w[self.k] == self.w[self.k-1])\
-                   and (self.w[self.k] not in ['l','s','z']):
+            if (self.w[self.k] == self.w[self.k - 1])\
+                    and (self.w[self.k] not in ['l', 's', 'z']):
                 self.k -= 1
             self.update()
-        return self.w
 
-    def stemOther(self):
+    def stem_other(self):
         """
-        Removes major suffixes not addressed previously. e.g.
+        Removes other major suffixes not accounted for by
+        stem_major()
 
         relational  ->  relation    ->  relate
         conditional ->  condition
@@ -87,26 +92,39 @@ class ModifiedStemmer:
         enjoyment   ->  enjoy
         richest     ->  rich
         """
-        suffix = ['tional', 'ality', 'able','ably', 'ly',
-                  'ization', 'ation', 'icity', 'ism',
-                  'fulness','ness', 'ive','ment','est','ship']
-        changeTo = ['tion', 'al', 'able', '','',
-                    'ize', 'ate', 'ic', '', '',
-                    '', '', '', '', '']
+        suffixes = [
+            ['tional', 'tion'],
+            ['ality', 'al'],
+            ['able', 'able'],
+            ['ably', ''],
+            ['ly', ''],
+            ['ization', 'ize'],
+            ['ation', 'ate'],
+            ['icity', 'ic'],
+            ['ism', ''],
+            ['fulness', ''],
+            ['ness', ''],
+            ['ive', ''],
+            ['ment', ''],
+            ['est', ''],
+            ['ship', ''],
+        ]
 
-        for i in range(len(suffix)):
-            if self.w.endswith(suffix[i]):
-                self.w = self.w[ :-1*len(suffix[i])] + changeTo[i]
-        return self.w
-    
-    def stem(self, word):
+        for i in range(len(suffixes)):
+            if self.w.endswith(suffixes[i][0]):
+                self.w = self.w[:-1 * len(suffixes[i][0])] + suffixes[i][1]
+
+    def stem(self, word_to_stem):
         """
-        Calls stemMajor() and stemOther(), returns the stemmed word
-        """
-        self.w = word
-        self.k = len(word)-1
         
-        # usually changes, if any, after stemMajor() are the only ones
-        if word != self.stemMajor():
-            return self.w
-        return self.stemOther()
+        :param word_to_stem: word to stem
+        :return stemmed word
+        """
+        self.w = word_to_stem
+        self.k = len(word_to_stem) - 1
+
+        self.stem_major()
+        if word_to_stem == self.w:
+            self.stem_other()
+
+        return self.w

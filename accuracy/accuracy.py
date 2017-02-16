@@ -7,10 +7,10 @@ from stemmer import ModifiedStemmer
 words_to_stem = []
 valid_words = []
 
-with open("voc.txt") as fin:
+with open("input.txt") as fin:
     words_to_stem = fin.read().splitlines()
     
-with open("output.txt") as fin:
+with open("porter_output.txt") as fin:
     valid_words = fin.read().splitlines()
     
 s = ModifiedStemmer()
