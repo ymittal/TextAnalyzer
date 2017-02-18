@@ -17,9 +17,7 @@ How can the accuracy of the modified stemming algorithm be determined?
   
 ### Potential Solution
 
-To check my output against the closest valid word which is also stemmed, if any stemming is possible at all. As of now, I do not have these reference words, and I need help from volunteers who can _manually_ process all words on Porter's list of input words.[<sup>[1]</sup>](#fn1)
-
-Following are the steps involved:
+To check my output against the closest valid word which is also stemmed, if any stemming is possible at all. As of now, I do not have these reference words, and I need help from volunteers who can _manually_ process all words on Porter's list of input words.[<sup>[1]</sup>](#fn1) Following are the steps involved:
   - [x] Split the input file into chunks of 500 words each
   - [ ] Process one file at a time
   - [ ] Combine the processed output files
