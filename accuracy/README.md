@@ -1,6 +1,6 @@
 # Modified Stemming Algorithm
 
-A major part of this project is the algorithm I use to obtain the stems of different words. Stemming is the process of removing inflectional affixes from a word to get the stem, which may not be a valid word.
+A major part of this project is the algorithm I use to obtain the stems of different words. Stemming is the process of removing inflectional affixes from a word to get the stem, which may not be a valid word. For example, the words "running", "runner" and "runs" reduce to the stem "run".
 
 ## Background
 
@@ -13,7 +13,7 @@ Exactly! Thus came the realizaton that I was not actually looking for Porter's s
 How can the accuracy of the modified stemming algorithm be determined?
 
   - _Can I compare my output with the output from Porter's stemmer?_ No, because Porter's stemmer does not consider whether the output is a valid word. Then the accuracy of my algorithm would be almost 63%, in which case one should just stick with Porter's algorithm. :smile:
-  - _Can I check if my output exists in the dictionary?_ Close! But still no, because sometimes the algorithm may stem a word in a way that the output is a valid word but is not the actual stem of the input word.
+  - _Can I check if my output exists in the dictionary?_ Close! But still no, because sometimes the algorithm may stem a word in a way that the output is a valid word but is not the actual stem of the input word. Consider for example the word "number". Some of the stemmers may reduce the word to "numb", which is a valid word but is not the stem needed.
   
 ### Potential Solution
 
@@ -26,7 +26,7 @@ To check my output against the closest valid word which is also stemmed, if any 
 
 ### Call for Volunteers
 
-Essentially, you will be given a file containing 500 words which you are to process. Processing essentially entails converting a word to its closest valid word which is stripped of suffixes, if any. For example, the word "happily" changes to "happy", while the word "number" remains unchanged. Even though the task may seem straightforward for most words on the list, I encourage you to refer to a dictionary or check online whenever you are doubtful whether your _processed_ output word is the closest stem possible. The expected deliverable is a list of 500 processed words.
+Essentially, you will be given a file containing 500 words which you are to process. Processing essentially entails converting a word to its closest valid word which is stripped of suffixes, if any. For example, the word "happily" changes to "happy", while the word "number" remains unchanged. Even though the task may seem straightforward for most words on the list, I encourage you to refer to a dictionary or check online whenever you are doubtful whether your _processed_ output word is the closest stem possible. The expected deliverable is a list of 500 processed words. If you face trouble processing a word, please mark the word so we can discuss it later.
 
 **Note:** I greatly appreciate your contribution. However, please do not feel obliged to continue to help at any point of time. I will always respect your decision to say _NO_. That being said, let me know how I can help you have a positive experience.
 
