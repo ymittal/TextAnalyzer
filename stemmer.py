@@ -12,12 +12,12 @@ class ModifiedStemmer:
 
     def __init__(self):
         self.w = ''         # word to stem
-        self.k = 0          # index of last character
+        self.k = None       # index of last character
 
     def update(self):
         """
         Updates the word by chopping off portion of the word
-        already determined to be suffixes
+        already determined to be suffix(es)
         """
         self.w = self.w[:self.k + 1]
 
@@ -53,28 +53,34 @@ class ModifiedStemmer:
         missing     ->  miss
         """
         if self.w.endswith('s'):
-            if self.w.endswith(('sses', 'ies')):
+            if self.w.endswith('sses'):
                 self.k -= 2
-                if self.w.endswith('ies'):
-                    self.w = self.w[:self.k] + 'y'
+            elif self.w.endswith('ies'):
+                self.k -= 2
+                self.w = self.w[:self.k] + 'y'
             elif not self.w.endswith('ss'):
                 self.k -= 1
+
             self.update()
 
         if self.w.endswith(('ed', 'ing', 'er')):
-            if self.w.endswith(('ed', 'er')):
-                if self.w.endswith('er') and self.w[self.k - 2] != self.w[self.k - 3]:
-                    return
+            if self.w.endswith('er') and \
+                    self.w[self.k - 2] != self.w[self.k - 3]:
+                return
+
+            if self.w.endswith('ing'):
+                self.k -= 3
+            else:
                 self.k -= 2
                 if self.w.endswith('ied'):
                     self.w = self.w[:self.k] + 'y'
                 if self.is_e_restorable():
                     self.k += 1
-            else:
-                self.k -= 3
-            if (self.w[self.k] == self.w[self.k - 1])\
-                    and (self.w[self.k] not in ['l', 's', 'z']):
+
+            if self.w[self.k] == self.w[self.k - 1] and \
+                    (self.w[self.k] not in ['l', 's', 'z']):
                 self.k -= 1
+
             self.update()
 
     def stem_other(self):
@@ -116,7 +122,7 @@ class ModifiedStemmer:
 
     def stem(self, word_to_stem):
         """
-        
+
         :param word_to_stem: word to stem
         :return stemmed word
         """
