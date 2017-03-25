@@ -77,7 +77,11 @@ class ModifiedStemmer:
                 if self.is_e_restorable():
                     self.k += 1
 
-            if self.w[self.k] == self.w[self.k - 1] and \
+            if self.w[self.k - 1] == 'b' and \
+                    self.w[self.k] == 'l':
+                self.w = self.w[:self.k + 1] + 'e'
+                self.k += 1
+            elif self.w[self.k] == self.w[self.k - 1] and \
                     (self.w[self.k] not in ['l', 's', 'z']):
                 self.k -= 1
 
