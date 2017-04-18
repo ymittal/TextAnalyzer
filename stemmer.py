@@ -63,7 +63,7 @@ class ModifiedStemmer:
 
             self.update()
 
-        if self.w.endswith(('ed', 'ing', 'er')):
+        if self.w.endswith(('er', 'ing', 'ed')):
             if self.w.endswith('er') and \
                     self.w[self.k - 2] != self.w[self.k - 3]:
                 return
@@ -103,6 +103,7 @@ class ModifiedStemmer:
         richest     ->  rich
         """
         suffixes = [
+            ['ational', 'ate'],
             ['tional', 'tion'],
             ['ality', 'al'],
             ['able', 'able'],
@@ -126,10 +127,12 @@ class ModifiedStemmer:
 
     def stem(self, word_to_stem):
         """
-
         :param word_to_stem: word to stem
         :return stemmed word
         """
+        if len(word_to_stem) <= 2:
+            return word_to_stem
+
         self.w = word_to_stem
         self.k = len(word_to_stem) - 1
 
@@ -138,3 +141,12 @@ class ModifiedStemmer:
             self.stem_other()
 
         return self.w
+
+
+def main():
+    s = ModifiedStemmer()
+    print (s.stem('dancer'))
+
+
+if __name__ == "__main__":
+    main()
